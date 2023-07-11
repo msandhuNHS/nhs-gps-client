@@ -17,9 +17,9 @@ jobs:
         with:
           node-version: "18.x"
           cache: "npm"
-          cache-dependency-path: './gps-client/package-lock.json'
+          cache-dependency-path: './package-lock.json'
       - name: Install dependencies
-        run: npm install
+        run: npm ci --package-lock-only
       - name: Build
         run: npm run build
       - name: Configure AWS Credentials
