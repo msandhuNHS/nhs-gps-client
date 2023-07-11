@@ -1,18 +1,28 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+# Sample workflow to access AWS resources when workflow is tied to branch
+# The workflow Creates static website using aws s3
+name: AWS deploy Next.js app workflow
+on:
+  push
+env:
+  BUCKET_NAME : "arn:aws:s3:::nhs-gps-client"
+  AWS_REGION : "eu-north-1"
+# permission can be added at job level or workflow level    
+permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
 jobs:
-  Explore-GitHub-Actions:
+  S3PackageUpload:
     runs-on: macos-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
+      - name: Git clone the repository
         uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::136293001324:role/github-oidc-role
+          role-session-name: githubRoleSession
+          aws-region: ${{ env.AWS_REGION }}
+      # Upload a file to AWS s3
+      - name:  Copy index.html to s3
         run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          aws s3 cp ./index.html s3://${{ env.BUCKET_NAME }}/
