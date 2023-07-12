@@ -19,7 +19,7 @@ jobs:
           cache: "npm"
           cache-dependency-path: './package-lock.json'
       - name: Install dependencies
-        run: npm ci --package-lock-only
+        run: npm ci
       - name: Build
         run: npm run build
       - name: Configure AWS Credentials
