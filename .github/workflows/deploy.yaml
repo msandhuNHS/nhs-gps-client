@@ -17,11 +17,13 @@ jobs:
         with:
           node-version: "18.x"
           cache: "npm"
-          cache-dependency-path: '${{github.workspace}}/gps-client/package-lock.json'
+          cache-dependency-path: "./gps-client/package-lock.json"
       - name: Install dependencies
-        run: npm ci
+        run: npm install -g yarn
+      - name: Install
+        run: yarn install --frozen-lockfile
       - name: Build
-        run: npm run build
+        run: yarn build
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
